@@ -1,12 +1,7 @@
 <?php
 
-$pdo = new PDO("mysql:dbname=bookstore;host=127.0.0.1;charset=utf8mb4", 'root', '',[
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-]);
-$query = 'SELECT book.id, book.title, author.name as authorName, genre.genre_name as genreName FROM book 
- join bookstore.author  on book.author_id = author.id 
- join bookstore.genre  using(genre_id);';
-$result = $pdo->query($query);
+require 'functions.php';
+$books = getBooks();
 
 //foreach ($result as $row) {
 //    $books[] = $row;
@@ -34,16 +29,18 @@ $result = $pdo->query($query);
         </tr>
         </thead>
         <tbody>
-        <?php foreach ($result as $row):?>
+        <?php foreach ($books as $book):?>
             <tr class="table-info">
-                <td><?=$row['id']?></td>
-                <td><?=$row['title']?></td>
-                <td><?=$row['authorName']?></td>
-                <td><?=$row['genreName']?></td>
+                <td><?=$book['id']?></td>
+                <td><a href="/page.php?id=<?=$book['id']?>"><?=htmlspecialchars($book['title'])?></a></td>
+                <td><?=$book['authorName']?></td>
+                <td><?=$book['genre_name']?></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
+    <br/>
+    <a href="page.php">Link</a>
 </div>
 </body>
 </html>
