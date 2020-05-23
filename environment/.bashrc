@@ -124,3 +124,4 @@ green='\e[0;32m'
 NC='\e[0m'
 echo -e "\n ${green}$php_ver${NC}"
 echo -e "\n ${green}$apache2_ver${NC}"
+cd /var/www/html

@@ -38,6 +38,7 @@ tmpdir		= /tmp
 lc-messages-dir	= /usr/share/mysql
 skip-external-locking
 skip-grant-tables
+default-time-zone="+03:00"
 #
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.

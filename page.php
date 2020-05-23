@@ -1,6 +1,8 @@
 <?php
 require 'functions.php';
 $book = getBookById($_GET['id']);
+$comments = getComments($_GET['id']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -94,16 +96,36 @@ $book = getBookById($_GET['id']);
                     <?php foreach (getComments() as $comment): ?>
                         <?php if ($comment['book_id'] == $book['id']): ?>
                             <p><?= $comment['message'] ?></p>
-                            <?php for ($i = 1; $i <=$comment['rating']; $i++): ?>
+                            <?php for ($i = 1; $i <= $comment['rating']; $i++): ?>
                                 <span class="text-warning">&#9733;</span>
                             <?php endfor; ?>
                             <span><?= $comment['rating'] ?>.0 stars</span>
                             <br/>
-                            <small class="text-muted">Posted by Anonymous on 3/1/17</small>
+                            <small class="text-muted">Posted by Anonymous on <?=formatCommentDate($comment['added_at'])?></small>
                             <hr>
                         <?php endif; ?>
                     <?php endforeach; ?>
-                    <a href="#" class="btn btn-success">Leave a Review</a>
+                    <!--                    --><?php //foreach ($comments as $comment): ?>
+                    <!--                        <p>--><? //= $comment['message'] ?><!--</p>-->
+                    <!--                        --><?php //for ($i = 1; $i <= $comment['rating']; $i++): ?>
+                    <!--                            <span class="text-warning">&#9733;</span>-->
+                    <!--                        --><?php //endfor; ?>
+                    <!--                        <span>--><? //= $comment['rating'] ?><!--.0 stars</span>-->
+                    <!--                        <br/>-->
+                    <!--                        <small class="text-muted">Posted by Anonymous on 3/1/17</small>-->
+                    <!--                        <hr>-->
+                    <!--                    --><?php //endforeach; ?>
+                    <form method="post" action="add_comment.php">
+                        <div class="form-group">
+                            <input name="id" type="hidden" value="<?=htmlspecialchars($_GET['id'])?>">
+                            <label for="exampleFormControlTextarea1"></label>
+                            <textarea class="form-control" name="comment" id="exampleFormControlTextarea1"
+                                      rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Добавить</button>
+                    </form>
+                    <br/>
+<!--                    <a href="#" class="btn btn-success">Leave a Review</a>-->
                 </div>
             </div>
             <!-- /.card -->
@@ -119,7 +141,7 @@ $book = getBookById($_GET['id']);
 <!-- Footer -->
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website <?=date('Y')?>></p>
     </div>
     <!-- /.container -->
 </footer>
