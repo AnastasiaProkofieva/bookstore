@@ -1,0 +1,6 @@
+{
+    "name": "vagrant/html",
+    "require": {
+        "swiftmailer/swiftmailer": "^6.0"
+    }
+}

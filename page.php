@@ -27,33 +27,7 @@ $comments = getComments($_GET['id']);
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="#">Start Bootstrap</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<?php require_once './templates/header.php'?>
 
 <!-- Page Content -->
 <div class="container">
@@ -77,14 +51,23 @@ $comments = getComments($_GET['id']);
                 <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt="">
                 <div class="card-body">
                     <h3 class="card-title"><?= $book['title'] ?></h3>
-                    <h4>$24.99</h4>
+                    <h4><?=$book['cost']?> UAH</h4>
                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit
                         fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur
                         praesentium animi perspiciatis molestias iure, ducimus!</p>
                     <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
                     4.0 stars
                 </div>
+                <form class="form-inline" method="post" action="add_to_cart.php">
+                    <div class="form-group">
+                        <input type="hidden" name="id" value="<?=$book['id']?>">
+                        <label for="count">Количество: </label>
+                        <input type="number"  class="form-control" min="1" value="1" id="count" name="count" />
+                    </div>
+                    <button type="submit" class="btn btn-success">Добавить в Корзину</button>
+                </form>
             </div>
+
             <!-- /.card -->
 
             <div class="card card-outline-secondary my-4">
@@ -93,31 +76,23 @@ $comments = getComments($_GET['id']);
                 </div>
 
                 <div class="card-body">
-                    <?php foreach (getComments() as $comment): ?>
-                        <?php if ($comment['book_id'] == $book['id']): ?>
-                            <p><?= $comment['message'] ?></p>
-                            <?php for ($i = 1; $i <= $comment['rating']; $i++): ?>
-                                <span class="text-warning">&#9733;</span>
-                            <?php endfor; ?>
-                            <span><?= $comment['rating'] ?>.0 stars</span>
-                            <br/>
-                            <small class="text-muted">Posted by Anonymous on <?=formatCommentDate($comment['added_at'])?></small>
-                            <hr>
-                        <?php endif; ?>
+                    <?php foreach ($comments as $comment): ?>
+                        <p><?= htmlspecialchars($comment['message']) ?></p>
+                        <?php for ($i = 1; $i <= 5; $i++): ?>
+                            <?php $star = $comment['rating'] < $i ? '&#9734;' : '&#9733;' ?>
+                            <span class="text-warning"><?= $star ?></span>
+                        <?php endfor; ?>
+                        <?php $starAmount = $comment['rating'] > 1 ? $comment['rating'] . ".0 stars" : $comment['rating'] . ".0 star" ?>
+                        <span><?= $starAmount ?></span>
+                        <br/>
+                        <small class="text-muted">Posted by Anonymous
+                            on <?= formatCommentDate($comment['added_at']) ?></small>
+                        <hr>
                     <?php endforeach; ?>
-                    <!--                    --><?php //foreach ($comments as $comment): ?>
-                    <!--                        <p>--><? //= $comment['message'] ?><!--</p>-->
-                    <!--                        --><?php //for ($i = 1; $i <= $comment['rating']; $i++): ?>
-                    <!--                            <span class="text-warning">&#9733;</span>-->
-                    <!--                        --><?php //endfor; ?>
-                    <!--                        <span>--><? //= $comment['rating'] ?><!--.0 stars</span>-->
-                    <!--                        <br/>-->
-                    <!--                        <small class="text-muted">Posted by Anonymous on 3/1/17</small>-->
-                    <!--                        <hr>-->
-                    <!--                    --><?php //endforeach; ?>
+                    <!--                    -->
                     <form method="post" action="add_comment.php">
                         <div class="form-group">
-                            <input name="id" type="hidden" value="<?=htmlspecialchars($_GET['id'])?>">
+                            <input name="id" type="hidden" value="<?= htmlspecialchars($_GET['id']) ?>">
                             <label for="exampleFormControlTextarea1"></label>
                             <textarea class="form-control" name="comment" id="exampleFormControlTextarea1"
                                       rows="3"></textarea>
@@ -125,7 +100,7 @@ $comments = getComments($_GET['id']);
                         <button type="submit" class="btn btn-success">Добавить</button>
                     </form>
                     <br/>
-<!--                    <a href="#" class="btn btn-success">Leave a Review</a>-->
+                    <!--                    <a href="#" class="btn btn-success">Leave a Review</a>-->
                 </div>
             </div>
             <!-- /.card -->
@@ -141,7 +116,7 @@ $comments = getComments($_GET['id']);
 <!-- Footer -->
 <footer class="py-5 bg-dark">
     <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website <?=date('Y')?>></p>
+        <p class="m-0 text-center text-white">Copyright &copy; Your Website <?= date('Y') ?></p>
     </div>
     <!-- /.container -->
 </footer>
