@@ -14,10 +14,10 @@ class ProductService
     {
         $page = getPageNumber();
         $offset = ($page - 1) * ITEMS_PER_PAGE;
-        $query = "SELECT book.id, book.title, author.name as authorName, genre.genre_name, book.cost FROM book 
+        $query = "SELECT book.id, book.title, book.url, author.name as authorName, genre.genre_name, book.cost FROM book 
 left join bookstore.author  on book.author_id = author.id 
 left join bookstore.genre  using(genre_id)
-where visability like true
+WHERE visability = 1 
 %s
 ORDER BY id 
 ";
@@ -30,11 +30,12 @@ ORDER BY id
 //order by book.id asc LIMIT $offset,8
         $where = '';
         if (!empty($ids)) {
-            $where = sprintf('WHERE book.id IN (%s)', implode(',', $ids));
+            $where = sprintf(' AND book.id IN (%s) ', implode(',', $ids));
         }
         $query = sprintf($query, $where);
         $pdo = getPDO();
         $result = $pdo->query($query);
+
         $result->setFetchMode(PDO:: FETCH_ASSOC);
         return $result->fetchAll();
 //    $books= [];
@@ -46,12 +47,12 @@ ORDER BY id
 
     public function getBookById($bookId): array
     {
-        $query = "SELECT book.id, book.title, author.name as authorName, genre.genre_name, genre.genre_id, book.genre_id, 
-Comment.message, Comment.book_id, Comment.comment_id, Comment.rating, book.cost FROM book 
+        $query = "SELECT book.id, book.title, author.name as authorName, genre.genre_name, genre.genre_id, book.genre_id, book.url,
+Comment.message, Comment.book_id, Comment.comment_id, Comment.rating, book.cost, book.visability FROM book 
 left join bookstore.author  on book.author_id = author.id
 left join bookstore.Comment  on book.id = Comment.book_id 
 left join bookstore.genre  using(genre_id)  
-where book.id = ?
+where  book.id = ?
 ";
         $pdo = getPDO();
         $result = $pdo->prepare($query);
@@ -152,5 +153,19 @@ where id = :id
 
         return (int)$pdo->lastInsertId();
     }
-
+    public function getBookByUrl($url): array
+    {
+        $query = "SELECT book.id, book.title, author.name as authorName, genre.genre_name, genre.genre_id, book.genre_id, book.url,
+Comment.message, Comment.book_id, Comment.comment_id, Comment.rating, book.cost, book.visability FROM book 
+left join bookstore.author  on book.author_id = author.id
+left join bookstore.Comment  on book.id = Comment.book_id 
+left join bookstore.genre  using(genre_id)  
+where book.url = ?
+";
+        $pdo = getPDO();
+        $result = $pdo->prepare($query);
+        $result->execute([$url]);
+        $result->setFetchMode(PDO:: FETCH_ASSOC);
+        return $result->fetch();
+    }
 }

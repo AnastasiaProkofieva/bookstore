@@ -304,7 +304,7 @@ require '../classes/ProductService.php';
                                         <td><?= $product['cost'] ?></td>
                                         <td><?= $product['authorName'] ?></td>
                                         <td><?= $product['genre_name'] ?></td>
-                                        <td><a href="/admin/product_edit.php?id=<?=$product['id']?>">Редактировать</a>&nbsp;<a href="/admin/product_delete.php?id=<?=$product['id']?>">Удалить</a></td>
+                                        <td><a href="<?=getProductUrl($product)?>">Редактировать</a>&nbsp;<a href="/admin/product_delete.php?id=<?=$product['id']?>">Удалить</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                                 </tbody>

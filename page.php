@@ -1,7 +1,20 @@
 <?php
 require 'functions.php';
-$book = getBookById($_GET['id']);
-$comments = getComments($_GET['id']);
+
+try {
+    if (!empty($_GET['id'])) {
+        $book = getBookById($_GET['id']);
+    } elseif (!empty($_GET['url'])) {
+        $book = getBookByUrl($_GET['url']);
+    }else{
+        throw new \Exception('');
+    }
+} catch (\Throwable $err) {
+    header("HTTP/1.0 404 Not Found");
+    exit();
+}
+
+$comments = getComments($book['id']);
 
 ?>
 <!DOCTYPE html>
@@ -27,7 +40,7 @@ $comments = getComments($_GET['id']);
 <body>
 
 <!-- Navigation -->
-<?php require_once './templates/header.php'?>
+<?php require_once './templates/header.php' ?>
 
 <!-- Page Content -->
 <div class="container">
@@ -51,18 +64,18 @@ $comments = getComments($_GET['id']);
                 <img class="card-img-top img-fluid" src="http://placehold.it/900x400" alt="">
                 <div class="card-body">
                     <h3 class="card-title"><?= $book['title'] ?></h3>
-                    <h4><?=$book['cost']?> UAH</h4>
+                    <h4><?= $book['cost'] ?> UAH</h4>
                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente dicta fugit
                         fugiat hic aliquam itaque facere, soluta. Totam id dolores, sint aperiam sequi pariatur
                         praesentium animi perspiciatis molestias iure, ducimus!</p>
                     <span class="text-warning">&#9733; &#9733; &#9733; &#9733; &#9734;</span>
                     4.0 stars
                 </div>
-                <form class="form-inline" method="post" action="add_to_cart.php">
+                <form class="form-inline" method="post" action="/add_to_cart.php">
                     <div class="form-group">
-                        <input type="hidden" name="id" value="<?=$book['id']?>">
+                        <input type="hidden" name="id" value="<?= $book['id'] ?>">
                         <label for="count">Количество: </label>
-                        <input type="number"  class="form-control" min="1" value="1" id="count" name="count" />
+                        <input type="number" class="form-control" min="1" value="1" id="count" name="count"/>
                     </div>
                     <button type="submit" class="btn btn-success">Добавить в Корзину</button>
                 </form>
@@ -85,14 +98,13 @@ $comments = getComments($_GET['id']);
                         <?php $starAmount = $comment['rating'] > 1 ? $comment['rating'] . ".0 stars" : $comment['rating'] . ".0 star" ?>
                         <span><?= $starAmount ?></span>
                         <br/>
-                        <small class="text-muted">Posted by Anonymous
-                            on <?= formatCommentDate($comment['added_at']) ?></small>
+                        <small class="text-muted">Posted by Anonymous on <?= formatCommentDate($comment['added_at']) ?></small>
                         <hr>
                     <?php endforeach; ?>
                     <!--                    -->
-                    <form method="post" action="add_comment.php">
+                    <form method="post" action="/add_comment.php">
                         <div class="form-group">
-                            <input name="id" type="hidden" value="<?= htmlspecialchars($_GET['id']) ?>">
+                            <input name="id" type="hidden" value="<?= htmlspecialchars($book['id']) ?>">
                             <label for="exampleFormControlTextarea1"></label>
                             <textarea class="form-control" name="comment" id="exampleFormControlTextarea1"
                                       rows="3"></textarea>

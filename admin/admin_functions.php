@@ -1,5 +1,6 @@
 <?php
 require '../functions.php';
+
 function getPendingOrders()
 {
     $sql = "select COUNT(1) FROM `order` WHERE status='pending'";
@@ -37,4 +38,10 @@ function getBestMonthEarnings()
         'Май',
     ];
     return [$months[$row['mnth']-1],$row['total']];
+}
+function getProductUrl(array $product)// должен быть тип array $book, переделать ордерс
+{
+
+    return "/admin/product/edit/{$product['id']}";
+
 }

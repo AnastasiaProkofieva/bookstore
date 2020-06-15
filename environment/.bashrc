@@ -115,6 +115,10 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+export XDEBUG_CONFIG="remote_enable=1 remote_mode=req remote_port=9000 remote_host=10.0.2.2 remote_connect_
+back=0"
+export PHP_IDE_CONFIG="serverName=localhost"
+
 echo "Hello $USER"
 php_ver=`php -v`
 apache2_ver=`apache2 -v`

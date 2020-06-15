@@ -57,7 +57,7 @@ $books = getBooks();
                         <p class="card-text">Автор: <?= $book['authorName'] ?>, Жанр: <?= $book['genre_name'] ?></p>
                     </div>
                     <div class="card-footer">
-                        <a href="/page.php?id=<?= $book['id'] ?>" class="btn btn-primary">Подробнее</a>
+                        <a href="<?= getBookUrl($book) ?>" class="btn btn-primary">Подробнее</a>
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 <?php
-require 'autoload.php';
+//require 'autoload.php';
+require 'vendor/autoload.php';
 define('ITEMS_PER_PAGE', 8);
 define('PUB_KEY', 'sandbox_i96445077653');
 define('PRIVATE_KEY', 'sandbox_th2Vhc533WCmoAWPnlpcblegCT9JWX9UG3tbFUXe');
@@ -13,16 +14,16 @@ function getPDO()
 
 function getBooks(array $ids = []): array
 {
-    require_once "classes/ProductService.php";
+
     $class = new ProductService();
-    return  $class->getProductsList($ids);
+    return $class->getProductsList($ids);
 }
 
 function getBookById($bookId): array
 {
-    require "classes/ProductService.php";
+
     $class = new ProductService();
-    return  $class->getBookById($bookId);
+    return $class->getBookById($bookId);
 }
 
 function getGenres(): array
@@ -192,6 +193,7 @@ function getCartItems(): array
         $cart = json_decode($_COOKIE['cart'] ?? '', true);
     }
     //id => count
+
     if ($cart) {
         $ids = array_keys($cart);
         $books = getBooks($ids);
@@ -305,29 +307,32 @@ function updateOrder(string $data)
         'amount' => $amount
     ]);
     //require_once '/path/to/vendor/autoload.php';
-
-// Create the Transport
-    $transport = (new Swift_SmtpTransport('smtp.gmail.com', 465,'ssl'))
-        ->setUsername('anastasia.beetroot@gmail.com')
-        ->setPassword('a7n7a7s7t7asiya')
-    ;
-
-// Create the Mailer using your created Transport
-    $mailer = new Swift_Mailer($transport);
-
-// Create a message
-    ob_start();
-    require 'my-email-template.php';
-    $email = ob_get_clean();
-    $message = (new Swift_Message('Wonderful Subject'))
-        ->setFrom(['anastasia.beetroot@gmail.com' => 'Магазин'])
-        ->setTo(['Nactaciya@gmail.com'])
-        ->setBody($email,'text/html')
-    ;
-
-// Send the message
-    $result = $mailer->send($message);
+    $mailer = new Mailer();
+    $mailer->notifyOrder();
+    $mailer->notifyFeedback();
     return [$orderId, $status];
+//// Create the Transport
+//    $transport = (new Swift_SmtpTransport('smtp.gmail.com', 465,'ssl'))
+//        ->setUsername('anastasia.beetroot@gmail.com')
+//        ->setPassword('a7n7a7s7t7asiya')
+//    ;
+//
+//// Create the Mailer using your created Transport
+//    $mailer = new Swift_Mailer($transport);
+//
+//// Create a message
+//    ob_start();
+//    require 'my-email-template.php';
+//    $email = ob_get_clean();
+//    $message = (new Swift_Message('Wonderful Subject'))
+//        ->setFrom(['anastasia.beetroot@gmail.com' => 'Магазин'])
+//        ->setTo(['Nactaciya@gmail.com'])
+//        ->setBody($email,'text/html')
+//    ;
+//
+//// Send the message
+//    $result = $mailer->send($message);
+
 }
 
 function getPaymentStatusMessage()
@@ -338,9 +343,9 @@ function getPaymentStatusMessage()
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$_SESSION['order_id']]);
         $order = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($order['status']=='failed') {
+        if ($order['status'] == 'failed') {
             $message = sprintf("Заказ не оплачен.Заказ на сумму %s не оплачен", $order['amount']);
-        }else{
+        } else {
             $message = sprintf("Заказ на сумму %s оплачен", $order['amount']);
         }
         $message .= "
@@ -351,4 +356,18 @@ function getPaymentStatusMessage()
         unset($_SESSION['order_id']);
         return $message;
     }
+
+}
+
+function getBookUrl(array $book)// должен быть тип array $book, переделать ордерс
+{
+
+    return "/page/{$book['url']}.html";
+
+}
+
+function getBookByUrl($url): array
+{
+    $class = new ProductService();
+    return $class->getBookByUrl($url);
 }
