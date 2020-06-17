@@ -6,7 +6,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-            <form method="post" action="Cart.php">
+            <form method="post" action="/Cart.php">
                 <button type="submit" class="btn btn-success">
                     Корзина <span class="badge badge-light"><?= getItemsCount() ?></span>
                     <span class="sr-only">unread messages</span>
